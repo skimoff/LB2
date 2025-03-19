@@ -32,35 +32,23 @@ class Program
             a += da;
         }
     }
-
-    static double factorial(int n)
-    {
-        if (n == 0 || n == 1) return 1;
-        double result = 1;
-        for (int i = 2; i <= n; i++)
-        {
-            result *= i;
-        }
-
-        return result;
-    }
-
-    static void suma()
+    
+    static void task2()
     {
         double[] x_ = { 2, 10, -10 };
         foreach (double x in x_)
         {
             double y = Math.Pow(2, x);
             double sum = 1;
-            double term;
+            double term = Math.Log(2) * x;
             int i = 1;
 
-            do
+            while (Math.Abs(term) >= 1e-6)
             {
-                term = (Math.Pow(x, i) * Math.Pow(Math.Log(2), i)) / factorial(i);
                 sum += term;
                 i++;
-            } while (Math.Abs(term) >= 1e-6);
+                term *= (x * Math.Log(2)) / i;
+            }
 
             Console.WriteLine($"x = {x}, S(x) = {sum}, y(x) = {y}");
         }
@@ -116,7 +104,7 @@ class Program
                 {
                     correctAnswer = true;
                     points += health * 5;
-                    Console.Write($"You won. With {points} points.");
+                    Console.WriteLine($"You won. With {points} points.");
                 }
                 else
                 {
@@ -157,7 +145,7 @@ class Program
     static void Main(string[] args)
     {
         //task1();
-        //suma();
+        //task2();
         task3();
         Console.ReadKey();
     }
