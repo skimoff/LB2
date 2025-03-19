@@ -77,84 +77,75 @@ class Program
         return false;
     }
 
-    static int geussMyNumber(int xMax, int round)
+    static int hint(int health, int wight, int answer)
+    {
+        char hint_;
+
+        Console.WriteLine("Want a hint(1 damage)?(y/n)");
+        hint_ = char.Parse(Console.ReadLine());
+        if (hint_ == 'y')
+        {
+            health--;
+            if (wight > answer)
+                Console.WriteLine("num > answer");
+            if (wight < answer)
+                Console.WriteLine("num < answer");
+        }
+
+        return health;
+    }
+
+    static int geussMyNumber(int xMax, int round, int hp)
     {
         var random = new Random();
-        int damage = 1;
         int points = 0;
         int health;
+        int answer;
         bool correctAnswer;
         for (int i = 1; i <= round; i++)
         {
-            if (round <= 3) health = 5;
-            else health = 25;
-            int wight = random.Next(0,xMax);
-            int answer;
-            char hint;
+            health = hp;
+            int wight = random.Next(0, xMax);
             correctAnswer = false;
             Console.WriteLine($"Guess a number between 1 and 10. Round {i}");
-            do
+            while (correctAnswer == false)
             {
                 Console.Write("Enter number: ");
                 answer = Convert.ToInt32(Console.ReadLine());
-                if (answer != wight)
-                {
-                    health -= damage;
-                    correctAnswer = checkHealth(health);
-                    Console.WriteLine($"Wrong answer. Your health is {health}");
-                    if (health > 1)
-                    {
-                        Console.WriteLine("Want a hint(1 damage)?(y/n)");
-                        hint = char.Parse(Console.ReadLine());
-                        if (hint == 'y')
-                        {
-                            health -= damage;
-                            if (wight > answer)
-                                Console.WriteLine("num > answer");
-                            if (wight < answer)
-                                Console.WriteLine("num < answer");
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("You can't use the hint, your health level is too low");
-                    }
-                }
-
                 if (answer == wight)
                 {
                     correctAnswer = true;
-                    Console.WriteLine("You won.");
                     points += health * 5;
-                    Console.Write($"With {points} points.");
+                    Console.Write($"You won. With {points} points.");
                 }
-                
-            } while (correctAnswer == false);
-
-            
+                else
+                {
+                    health -= 1;
+                    correctAnswer = checkHealth(health);
+                    Console.WriteLine($"Wrong answer. Your health is {health}");
+                    if (health > 1)
+                        health = hint(health, wight, answer);
+                    else
+                        Console.WriteLine("You can't use the hint, your health level is too low");
+                }
+            }
         }
 
-        if (points > 1)
-        {
-            Console.WriteLine($"You won in game, with {points} points.");
-            return 1;
-        }
-        else
-        {
-            Console.WriteLine("You lose");
-            return 0;
-        }
+        return points;
     }
 
     static void task3()
     {
         Console.WriteLine("Guess a number, lvl 1.");
-        int nextLvl = geussMyNumber(10,3);
-        if (nextLvl == 1)
+        int points = geussMyNumber(10, 3, 5);
+        Console.WriteLine($"Your points is {points}. Lvl 2 in 5 seconds");
+        Thread.Sleep(5000);
+        if (points >= 1)
         {
             Console.Clear();
             Console.WriteLine("Guess a number, lvl 2.");
-            geussMyNumber(100, 2);
+            points += geussMyNumber(100, 2, 25);
+            Console.WriteLine($"You win with {points} points.");
         }
         else
         {
@@ -162,6 +153,7 @@ class Program
             Console.WriteLine("You cant play lvl 2.");
         }
     }
+
     static void Main(string[] args)
     {
         //task1();
